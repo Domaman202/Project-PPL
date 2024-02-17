@@ -13,8 +13,10 @@ class ETitle(private val text: String, private val font: Int) : Element() {
     override val type: SizeType
         get() = FIXED
 
-    override fun size(w: Dimension, g: Graphics2D): Size =
-        Size(w.width, g.getFontMetrics(Font("TimesRoman", ITALIC, font)).height * (text.count { it == '\n' } + 2))
+    override fun size(w: Dimension, g: Graphics2D): Size {
+        val metrics = g.getFontMetrics(Font("TimesRoman", BOLD + ITALIC, font))
+        return Size(metrics.stringWidth(text), metrics.height * (text.count { it == '\n' }))
+    }
 
     override fun paint(o: Offset, f: Size, w: Dimension, g: Graphics2D) {
         g.setRenderingHint(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_ON)

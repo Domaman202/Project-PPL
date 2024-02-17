@@ -9,6 +9,7 @@ import ru.DmN.siberia.utils.Module
 object PageHelper : Module("phtx/ppl/page/helper") {
     private fun initParsers() {
         // a
+        addSNP(A_CENTER)
         addSNP(A_SIZED)
         addSNP(A_OFFSET)
         // c
@@ -23,6 +24,7 @@ object PageHelper : Module("phtx/ppl/page/helper") {
 
     private fun initUnparsers() {
         // a
+        addSNU(A_CENTER)
         addSNU(A_SIZED)
         addSNU(A_OFFSET)
         // c
@@ -37,6 +39,7 @@ object PageHelper : Module("phtx/ppl/page/helper") {
 
     private fun initProcessors() {
         // a
+        addSEP(A_CENTER, "ru.DmN.phtx.ppl.attribute.ACenter")
         addSEP(A_SIZED, "ru.DmN.phtx.ppl.attribute.ASized")
         addSEP(A_OFFSET, "ru.DmN.phtx.ppl.attribute.AOffset")
         // c

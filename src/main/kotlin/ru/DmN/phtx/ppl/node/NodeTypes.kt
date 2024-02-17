@@ -6,6 +6,7 @@ import ru.DmN.siberia.node.NodeTypes.Type.PARSED
 
 enum class NodeTypes : INodeType {
     // a
+    A_CENTER("a-center", PARSED),
     A_SIZED("a-sized", PARSED),
     A_OFFSET("a-offset", PARSED),
     // c
