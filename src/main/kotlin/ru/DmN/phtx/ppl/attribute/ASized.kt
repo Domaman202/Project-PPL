@@ -1,6 +1,7 @@
 package ru.DmN.phtx.ppl.attribute
 
 import ru.DmN.phtx.ppl.element.Element
+import ru.DmN.phtx.ppl.element.Element.SizeType.FIXED
 import java.awt.Dimension
 import java.awt.Graphics2D
 
