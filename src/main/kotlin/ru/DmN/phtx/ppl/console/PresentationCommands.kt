@@ -67,8 +67,8 @@ object PresentationCommands {
                     get(console.readInt("\nВыберите презентацию"))
                 }
         //
-        BuildCommands.moduleSelect(console, presentation)
         BuildCommands.platformSelect(console, "JVM")
+        BuildCommands.moduleSelect(console, presentation)
         BuildCommands.moduleCompile(console)
         JvmCommands.moduleRun(console)
     }
@@ -100,10 +100,17 @@ object PresentationCommands {
                     """
                         (app-fn
                             (#show (presentation "$name" 2500
-                                (page-list
-                                    (e-title "$name" 36)
-                                    (e-image (inc-img "res/logo.jpg"))
-                                    (e-title "Авторы: $author" 24)))))
+                                (inc-ppl "src.ppl"))))
+                    """.trimIndent()
+                )
+            }
+            File("$dir/src.ppl").writer().use {
+                it.write(
+                    """
+                        [Страница]:
+                            [Заголовок (36)]: $name
+                            [Картинка]: res/logo.jpg
+                            [Заголовок (24)]: "Авторы: $author"
                     """.trimIndent()
                 )
             }

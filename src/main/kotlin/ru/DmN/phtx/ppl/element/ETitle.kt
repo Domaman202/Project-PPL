@@ -15,7 +15,7 @@ class ETitle(private val text: String, private val font: Int) : Element() {
 
     override fun size(w: Dimension, g: Graphics2D): Size {
         val metrics = g.getFontMetrics(Font("TimesRoman", BOLD + ITALIC, font))
-        return Size(metrics.stringWidth(text), metrics.height * (text.count { it == '\n' }))
+        return Size(metrics.stringWidth(text), metrics.height * (text.count { it == '\n' } + 1))
     }
 
     override fun paint(o: Offset, f: Size, w: Dimension, g: Graphics2D) {

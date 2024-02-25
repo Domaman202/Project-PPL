@@ -19,6 +19,7 @@ enum class NodeTypes : INodeType {
     E_TITLE("e-title", PARSED),
     // i
     INC_IMG("inc-img", PARSED),
+    INC_PPL("inc-ppl", PARSED),
     INC_TXT("inc-txt", PARSED),
     // p
     PAGE_FRACTAL("page-fractal", PARSED),

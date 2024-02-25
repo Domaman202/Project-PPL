@@ -40,15 +40,15 @@ object PageHelper : Module("phtx/ppl/page/helper") {
     private fun initProcessors() {
         // a
         addSEP(A_CENTER, "ru.DmN.phtx.ppl.attribute.ACenter")
-        addSEP(A_SIZED, "ru.DmN.phtx.ppl.attribute.ASized")
+        addSEP(A_SIZED,  "ru.DmN.phtx.ppl.attribute.ASized")
         addSEP(A_OFFSET, "ru.DmN.phtx.ppl.attribute.AOffset")
         // c
-        addSEP(C_PAIR, "ru.DmN.phtx.ppl.container.CPair")
-        addSEP(C_TRIPLE, "ru.DmN.phtx.ppl.container.CTriple")
+        addSEP(C_PAIR,    "ru.DmN.phtx.ppl.container.CPair")
+        addSEP(C_TRIPLE,   "ru.DmN.phtx.ppl.container.CTriple")
         addSEP(C_FOURFOLD, "ru.DmN.phtx.ppl.container.CFourfold")
         // e
         addSEP(E_IMAGE, "ru.DmN.phtx.ppl.element.EImage")
-        addSEP(E_TEXT, "ru.DmN.phtx.ppl.element.EText")
+        addSEP(E_TEXT,  "ru.DmN.phtx.ppl.element.EText")
         addSEP(E_TITLE, "ru.DmN.phtx.ppl.element.ETitle")
     }
 
