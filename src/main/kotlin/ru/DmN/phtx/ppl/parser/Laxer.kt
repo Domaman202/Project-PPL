@@ -74,6 +74,27 @@ class Laxer(input: String) { // todo: line & symbol info
                 NodeNodesList(NodeInfoImpl(E_IMAGE, null, line), arguments)
             }
 
+            "пара" -> {
+                checkC(':')
+                for (i in 0..1)
+                    arguments.add(next(tab)!!)
+                NodeNodesList(NodeInfoImpl(C_PAIR, null, line), arguments)
+            }
+
+            "тройка" -> {
+                checkC(':')
+                for (i in 0..2)
+                    arguments.add(next(tab)!!)
+                NodeNodesList(NodeInfoImpl(C_TRIPLE, null, line), arguments)
+            }
+
+            "четвёрка" -> {
+                checkC(':')
+                for (i in 0..3)
+                    arguments.add(next(tab)!!)
+                NodeNodesList(NodeInfoImpl(C_FOURFOLD, null, line), arguments)
+            }
+
             "размер" -> {
                 checkC(':')
                 arguments.add(next(tab - 1)!!)
@@ -84,6 +105,12 @@ class Laxer(input: String) { // todo: line & symbol info
                 checkC(':')
                 arguments.add(next(tab - 1)!!)
                 NodeNodesList(NodeInfoImpl(A_OFFSET, null, line), arguments)
+            }
+
+            "по центру", "в центре", "центр" -> {
+                checkC(':')
+                arguments.add(next(tab - 1)!!)
+                NodeNodesList(NodeInfoImpl(A_CENTER, null, line), arguments)
             }
 
             else -> throw RuntimeException()
