@@ -74,6 +74,18 @@ class Laxer(input: String) { // todo: line & symbol info
                 NodeNodesList(NodeInfoImpl(E_IMAGE, null, line), arguments)
             }
 
+            "размер" -> {
+                checkC(':')
+                arguments.add(next(tab - 1)!!)
+                NodeNodesList(NodeInfoImpl(A_SIZED, null, line), arguments)
+            }
+
+            "сдвиг" -> {
+                checkC(':')
+                arguments.add(next(tab - 1)!!)
+                NodeNodesList(NodeInfoImpl(A_OFFSET, null, line), arguments)
+            }
+
             else -> throw RuntimeException()
         }
     }

@@ -8,6 +8,7 @@ import java.awt.Font.ITALIC
 import java.awt.Graphics2D
 import java.awt.RenderingHints.KEY_TEXT_ANTIALIASING
 import java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+import kotlin.math.max
 
 class ETitle(private val text: String, private val font: Int) : Element() {
     override val type: SizeType
@@ -22,6 +23,6 @@ class ETitle(private val text: String, private val font: Int) : Element() {
         g.setRenderingHint(KEY_TEXT_ANTIALIASING, VALUE_TEXT_ANTIALIAS_ON)
         g.font = Font("TimesRoman", BOLD + ITALIC, font)
         val metrics = g.getFontMetrics(g.font)
-        g.drawString(text, (w.width - metrics.stringWidth(text) + o.right - o.left) / 2, metrics.height + o.up)
+        g.drawString(text, (w.width - metrics.stringWidth(text) + o.right - o.left) / 2,  max((metrics.height / 1.5).toInt() + o.up, o.up))
     }
 }
