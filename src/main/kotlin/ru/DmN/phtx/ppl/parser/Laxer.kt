@@ -29,8 +29,10 @@ class Laxer(input: String) { // todo: line & symbol info
         val operation = StringBuilder()
         while (!tryC(']')) {
             if (tryC('(')) {
+                skipSpace()
                 while (!tryC(')')) {
                     arguments += nextNumber()
+                    skipSpace()
                 }
                 checkC(']')
                 break
@@ -39,9 +41,19 @@ class Laxer(input: String) { // todo: line & symbol info
         }
         when (operation.toString().trim().lowercase()) {
             "страница" -> {
+                val sized = arguments.isNotEmpty()
                 if (tryC(':'))
                     arguments.addAll(nextOperations(tab))
-                NodeNodesList(NodeInfoImpl(PAGE_LIST, null, line), arguments)
+                NodeNodesList(
+                    NodeInfoImpl(
+                        if (sized)
+                            PAGE_SIZED_LIST
+                        else PAGE_LIST,
+                        null,
+                        line
+                    ),
+                    arguments
+                )
             }
 
             "заголовок" -> {

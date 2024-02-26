@@ -1,11 +1,8 @@
 package ru.DmN.test.phtx.ppl
 
-import ru.DmN.phtx.ppl.attribute.ACenter
-import ru.DmN.phtx.ppl.attribute.ASized
 import ru.DmN.phtx.ppl.element.EImage
 import ru.DmN.phtx.ppl.element.ETitle
 import ru.DmN.phtx.ppl.page.PageList
-import ru.DmN.phtx.ppl.page.PageSizedList
 import ru.DmN.phtx.ppl.utils.Presentation
 import javax.imageio.ImageIO
 import javax.swing.SwingUtilities

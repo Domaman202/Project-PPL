@@ -110,7 +110,7 @@ object PresentationCommands {
                         [Страница]:
                             [Заголовок (36)]: $name
                             [Картинка]: res/logo.jpg
-                            [Заголовок (24)]: "Авторы: $author"
+                            [Заголовок (24)]: Авторы: $author
                     """.trimIndent()
                 )
             }
