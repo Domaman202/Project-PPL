@@ -7,10 +7,13 @@ import java.awt.Image
 import java.awt.RenderingHints.KEY_ANTIALIASING
 import java.awt.RenderingHints.VALUE_ANTIALIAS_ON
 import java.awt.geom.RoundRectangle2D
+import java.net.URL
+import javax.imageio.ImageIO
 import kotlin.math.max
-import kotlin.math.min
 
 class EImage(private val image: Image) : Element() {
+    constructor(url: URL) : this(ImageIO.read(url))
+
     override val type: SizeType
         get() = DYNAMIC
 

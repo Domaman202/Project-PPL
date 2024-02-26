@@ -1,8 +1,9 @@
 package ru.DmN.phtx.ppl.parser
 
 import ru.DmN.pht.ast.NodeValue
-import ru.DmN.pht.ast.NodeValue.Type.INT
-import ru.DmN.pht.ast.NodeValue.Type.STRING
+import ru.DmN.pht.ast.NodeValue.Type.*
+import ru.DmN.pht.node.NodeParsedTypes
+import ru.DmN.pht.node.NodeParsedTypes.NEW
 import ru.DmN.pht.node.NodeTypes
 import ru.DmN.pht.node.NodeTypes.VALUE
 import ru.DmN.pht.node.nodeValue
@@ -70,7 +71,18 @@ class Laxer(input: String) { // todo: line & symbol info
 
             "картинка" -> {
                 checkC(':')
-                arguments.add(NodeNodesList(NodeInfoImpl(INC_IMG, null, line), mutableListOf(nextString())))
+                val image = nextString()
+                arguments.add(
+                    if (image.value.startsWith("http"))
+                        NodeNodesList(
+                            NodeInfoImpl(NEW, null, line),
+                            mutableListOf(
+                                NodeValue(NodeInfoImpl(VALUE, null ,line), CLASS, "java.net.URL"),
+                                image
+                            )
+                        )
+                    else NodeNodesList(NodeInfoImpl(INC_IMG, null, line), mutableListOf(image))
+                )
                 NodeNodesList(NodeInfoImpl(E_IMAGE, null, line), arguments)
             }
 
@@ -107,7 +119,7 @@ class Laxer(input: String) { // todo: line & symbol info
                 NodeNodesList(NodeInfoImpl(A_OFFSET, null, line), arguments)
             }
 
-            "по центру", "в центре", "центр" -> {
+            "середина" -> {
                 checkC(':')
                 arguments.add(next(tab - 1)!!)
                 NodeNodesList(NodeInfoImpl(A_CENTER, null, line), arguments)
@@ -124,7 +136,7 @@ class Laxer(input: String) { // todo: line & symbol info
         return nodes
     }
 
-    private fun nextStrings(prevTab: Int): Node {
+    private fun nextStrings(prevTab: Int): NodeValue {
         skipSpace()
         return if (tryC('\n')) {
             val sb = StringBuilder()
@@ -140,14 +152,14 @@ class Laxer(input: String) { // todo: line & symbol info
         } else nextString()
     }
 
-    private fun nextString(): Node {
+    private fun nextString(): NodeValue {
         val sb = StringBuilder()
         while (!tryC('\n') && check())
             sb.append(input[inc()])
         return NodeValue(NodeInfoImpl(VALUE, null, line), STRING, sb.trimStart().toString())
     }
 
-    private fun nextNumber(): Node {
+    private fun nextNumber(): NodeValue {
         val sb = StringBuilder()
         if (input[ptr] == '-') {
             sb.append('-')
