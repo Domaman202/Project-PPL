@@ -25,7 +25,7 @@ class EImage(private val image: Image) : Element() {
         val x = max(o.left, 32)
         val y = o.up + 32
         val sizeX = f.width - 64
-        val sizeY = if (w.height == f.height) f.height - 64 else f.height
+        val sizeY = if (w.height == f.height || o.up > 0) f.height - 64 else f.height
         g.clip = g.clip.apply {
             g.clip = RoundRectangle2D.Float(x.toFloat(), y.toFloat(), sizeX.toFloat(), sizeY.toFloat(), 50f, 50f)
             g.drawImage(image, x, y, sizeX, sizeY, null)
