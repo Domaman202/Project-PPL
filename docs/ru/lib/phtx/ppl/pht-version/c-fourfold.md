@@ -10,7 +10,7 @@
 
 ```pihta
 (app-fn
-    (#show (presentation "Тестовая Презентация" 1000
+    (#show (presentation "Тестовая Презентация" 1000 false
         (page-list
             (c-fourfold
                 (e-image (inc-img "res/0.jpg"))

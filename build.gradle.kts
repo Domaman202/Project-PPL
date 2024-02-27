@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "ru.DmN.phtx"
-version = "1.3.6"
+version = "1.4.0"
 
 repositories {
     mavenCentral()
@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation("ru.DmN.pht:Project-Pihta:1.16.2")
+    implementation("ru.DmN.pht:Project-Pihta:1.17.2")
     implementation("uk.co.caprica:vlcj:4.8.2")
     implementation("com.itextpdf:itextpdf:5.5.13.3")
     testImplementation(kotlin("test"))

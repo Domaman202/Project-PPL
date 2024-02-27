@@ -1,6 +1,9 @@
 package ru.DmN.phtx.ppl.console
 
 import ru.DmN.pht.console.JvmCommands
+import ru.DmN.pht.utils.Platforms
+import ru.DmN.pht.utils.Platforms.JVM
+import ru.DmN.phtx.ppl.utils.Presentation
 import ru.DmN.siberia.console.BaseCommands
 import ru.DmN.siberia.console.BuildCommands
 import ru.DmN.siberia.console.Console
@@ -8,6 +11,7 @@ import ru.DmN.siberia.console.utils.Argument
 import ru.DmN.siberia.console.utils.ArgumentType
 import ru.DmN.siberia.console.utils.Command
 import java.io.File
+import java.lang.Thread.sleep
 
 object PresentationCommands {
     val PRESENTATION_INIT = Command(
@@ -47,27 +51,40 @@ object PresentationCommands {
         PresentationCommands::presentationRun
     )
 
-    val ALL_COMMANDS = listOf(PRESENTATION_INIT, PRESENTATION_RUN)
+    val PRESENTATION_PRINT_PDF = Command(
+        "presentation-print-pdf",
+        "pp-pdf",
+        "Презентация",
+        "Печать презентации (PDF)",
+        "Собирает и печатает модуль презентации в PDF.",
+        emptyList(),
+        BaseCommands::interactiveAvailable,
+        PresentationCommands::presentationPrintPDF
+    )
+
+    val ALL_COMMANDS = listOf(PRESENTATION_INIT, PRESENTATION_RUN, PRESENTATION_PRINT_PDF)
 
     @JvmStatic
-    fun presentationRun(console: Console, vararg  args: Any?) {
-        console.println("[T] Презентации:")
-        val presentation =
-            File(".").list()!!
-                .filter { File(it).list()?.contains("module.pht") == true }
-                .run {
-                    forEachIndexed { i, it ->
-                        console.print(
-                            if (i + 1 < size)
-                                "[|] "
-                            else "[V] "
-                        )
-                        console.println("$i. ${nameModuleToRu(it)}")
-                    }
-                    get(console.readInt("\nВыберите презентацию"))
-                }
-        //
-        BuildCommands.platformSelect(console, "JVM")
+    fun presentationPrintPDF(console: Console, vararg args: Any?) {
+        val presentation = presentationSelect(console)
+        BuildCommands.platformSelect(console, JVM.toString())
+        BuildCommands.moduleSelect(console, presentation)
+        BuildCommands.moduleCompile(console)
+        JvmCommands.getAppClass().getMethod("presentation", Boolean::class.javaPrimitiveType).invoke(null, true).run {
+            this as Presentation
+            show()
+            sleep(100)
+            print()
+            sleep(1000)
+            frame.isVisible = false
+            frame.dispose()
+        }
+    }
+
+    @JvmStatic
+    fun presentationRun(console: Console, vararg args: Any?) {
+        val presentation = presentationSelect(console)
+        BuildCommands.platformSelect(console, JVM.toString())
         BuildCommands.moduleSelect(console, presentation)
         BuildCommands.moduleCompile(console)
         JvmCommands.moduleRun(console)
@@ -98,9 +115,13 @@ object PresentationCommands {
             File("$dir/src.pht").writer().use {
                 it.write(
                     """
-                        (app-fn
-                            (#show (presentation "$name" 2500
-                                (inc-ppl "src.ppl"))))
+                        (progn
+                            (import "phtx/ppl" [[types [ru.DmN.phtx.ppl.utils.Presentation]]])
+                            (app
+                                (app-fn (#show (#presentation . false)))
+                                (defn presentation ^Presentation [[printMode ^boolean]]
+                                    (presentation "Тестовая Презентация" 2500 printMode
+                                        (inc-ppl "src.ppl")))))
                     """.trimIndent()
                 )
             }
@@ -121,6 +142,24 @@ object PresentationCommands {
             console.println("Создание презентации завершено с ошибками:")
             t.printStackTrace(console.print)
         }
+    }
+
+    @JvmStatic
+    fun presentationSelect(console: Console): String {
+        console.println("[T] Презентации:")
+        return File(".").list()!!
+            .filter { File(it).list()?.contains("module.pht") == true }
+            .run {
+                forEachIndexed { i, it ->
+                    console.print(
+                        if (i + 1 < size)
+                            "[|] "
+                        else "[V] "
+                    )
+                    console.println("$i. ${nameModuleToRu(it)}")
+                }
+                get(console.readInt("\nВыберите презентацию"))
+            }
     }
 
     @JvmStatic

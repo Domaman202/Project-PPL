@@ -17,13 +17,13 @@ object NRPresentation : INodeProcessor<NodeNodesList> {
     override fun process(node: NodeNodesList, processor: Processor, ctx: ProcessingContext, mode: ValType): Node? =
         if (mode == ValType.VALUE) {
             val info = node.info
-            val args = listOf(node.nodes[0], node.nodes[1])
+            val args = node.nodes.dropLast(node.nodes.size - 3)
             val body = mutableListOf<Node>(nodeDef(
                 info,
                 "phtx\$ppl\$presentation",
                 nodeNew(info, "ru.DmN.phtx.ppl.utils.Presentation", args)
             ))
-            body += node.nodes.asSequence().drop(2)
+            body += node.nodes.asSequence().drop(3)
             body += nodeGetVariable(info, "phtx\$ppl\$presentation")
             NRUseCtx.process(
                 nodeUseCtx(

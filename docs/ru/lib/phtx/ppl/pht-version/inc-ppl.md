@@ -11,7 +11,7 @@
 *src.pht*
 ```pihta
 (app-fn
-    (#show (presentation "Тестовая презентация" 2500
+    (#show (presentation "Тестовая презентация" 2500 false
         (inc-ppl "src.ppl"))))
 ```
 

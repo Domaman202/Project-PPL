@@ -11,7 +11,7 @@
 ```pihta
 (use-ctx pht phtx/ppl
     (app-fn
-        (#show (presentation "Тестовая Презентация" 1000
+        (#show (presentation "Тестовая Презентация" 1000 false
             (page-list
                 (e-title "Тестовая Презентация" 26)
                 (a-center

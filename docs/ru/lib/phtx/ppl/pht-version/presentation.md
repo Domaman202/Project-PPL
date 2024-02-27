@@ -1,13 +1,14 @@
 ## presentation
 Создаёт `презентацию`.<br>
-Устанавливает `заголовок` и `время появления` презентации.<br>
+Устанавливает `заголовок`, `время появления`, `режим печати` презентации.<br>
 Последовательно добавляет `слайды` и выполняет `выражения`.
 
 ### Применение
 
-1. `(presentation title blackout (expr0) (exprN))`<br>
+1. `(presentation title blackout printmode (expr0) (exprN))`<br>
 `title` - _заголовок_.<br>
 `blackout` - _время появления_.<br>
+`printmode` - _режим печати_.<br>
 `expr0` `exprN` - _слайды_ и _выражения_.
 
 ### Примеры
@@ -15,7 +16,7 @@
 ```pihta
 (use-ctx pht phtx/ppl
     (app-fn
-        (#show (presentation "Тестовая Презентация" 1000
+        (#show (presentation "Тестовая Презентация" 1000 false
             (page-list
                 (e-title "Крещение Руси" 36)
                 (e-text  (inc-txt "res/0.txt") 24)

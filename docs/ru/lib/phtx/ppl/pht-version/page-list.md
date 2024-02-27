@@ -13,7 +13,7 @@
 ```pihta
 (use-ctx pht phtx/ppl
     (app-fn
-        (#show (presentation "Тестовая Презентация" 1000
+        (#show (presentation "Тестовая Презентация" 1000 false
             (page-list
                 (e-title "Тестовая Презентация" 36)
                 (e-title "Автор: DomamaN202" 26)

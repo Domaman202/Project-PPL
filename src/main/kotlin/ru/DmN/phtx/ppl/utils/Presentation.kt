@@ -25,7 +25,7 @@ import javax.swing.UIManager
 import javax.swing.plaf.nimbus.NimbusLookAndFeel
 import kotlin.concurrent.thread
 
-class Presentation(title: String, var blackout: Int = 1000) {
+class Presentation(title: String, var blackout: Int = 1000, var printMode: Boolean = false) {
     val frame = Frame(title)
     private val pages: MutableList<Page> = ArrayList()
     private var index: Int = -1
@@ -39,6 +39,43 @@ class Presentation(title: String, var blackout: Int = 1000) {
         frame.isLocationByPlatform = true
         frame.isVisible = true
         nextPage()
+    }
+
+    fun print() {
+        SwingUtilities.invokeLater {
+            val oi = index
+            val ob = blackout
+            val op = printMode
+            val od = frame.isUndecorated
+            blackout = 1
+            printMode = true
+            frame.dispose()
+            frame.isUndecorated = true
+            frame.isVisible = true
+            for (i in oi downTo 0)
+                prevPage()
+            val document = Document(Rectangle(frame.width.toFloat(), frame.height.toFloat()), 0f, 0f, 0f, 0f)
+            PdfWriter.getInstance(document, FileOutputStream("dump/screenshots.pdf"))
+            document.open()
+            for (i in 0 until pages.size) {
+                nextPage()
+                sleep(10)
+                val screenshot = BufferedImage(frame.width, frame.height, TYPE_INT_RGB)
+                frame.paint(screenshot.graphics)
+                ImageIO.write(screenshot, "png", File("dump/$index.png"))
+                document.add(Image.getInstance(screenshot, null))
+            }
+            document.close()
+            frame.dispose()
+            frame.isUndecorated = od
+            frame.isVisible = true
+            printMode = op
+            blackout = ob
+            sleep(100)
+            for (i in oi until pages.size)
+                prevPage()
+            nextPage()
+        }
     }
 
     fun nextPage() {
@@ -128,38 +165,9 @@ class Presentation(title: String, var blackout: Int = 1000) {
                 VK_RIGHT -> nextPage()
                 VK_P -> {
                     File("dump").mkdir()
-                    if (e.modifiersEx and CTRL_DOWN_MASK == CTRL_DOWN_MASK) {
-                        SwingUtilities.invokeLater {
-                            val oi = index
-                            val ob = blackout
-                            val od = frame.isUndecorated
-                            blackout = 1
-                            frame.dispose()
-                            frame.isUndecorated = true
-                            frame.isVisible = true
-                            for (i in oi downTo 0)
-                                prevPage()
-                            val document = Document(Rectangle(frame.width.toFloat(), frame.height.toFloat()), 0f, 0f, 0f, 0f)
-                            PdfWriter.getInstance(document, FileOutputStream("dump/screenshots.pdf"))
-                            document.open()
-                            for (i in 0 until pages.size) {
-                                nextPage()
-                                sleep(10)
-                                val screenshot = BufferedImage(frame.width, frame.height, TYPE_INT_RGB)
-                                frame.paint(screenshot.graphics)
-                                ImageIO.write(screenshot, "png", File("dump/$index.png"))
-                                document.add(Image.getInstance(screenshot, null))
-                            }
-                            document.close()
-                            frame.dispose()
-                            frame.isUndecorated = od
-                            frame.isVisible = true
-                            blackout = ob
-                            for (i in oi..pages.size - 2) {
-                                prevPage()
-                            }
-                        }
-                    } else {
+                    if (e.modifiersEx and CTRL_DOWN_MASK == CTRL_DOWN_MASK)
+                        print()
+                    else {
                         val screenshot = Robot().createScreenCapture(frame.bounds)
                         ImageIO.write(screenshot, "png", File("dump/$index.png"))
                         println("!")

@@ -15,7 +15,7 @@
 ```pihta
 (use-ctx pht phtx/ppl
     (app-fn
-        (#show (presentation "Тестовая Презентация" 1000
+        (#show (presentation "Тестовая Презентация" 1000 false
             (page-list
                 (a-offset 127 127 127 127
                     (e-image (inc-img "res/0.jpg"))))))))
