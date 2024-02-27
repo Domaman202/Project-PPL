@@ -1,8 +1,6 @@
 package ru.DmN.phtx.ppl.processors
 
-import ru.DmN.pht.node.nodeGetOrName
 import ru.DmN.pht.node.nodeMCall
-import ru.DmN.pht.node.nodeNew
 import ru.DmN.pht.node.nodeValue
 import ru.DmN.pht.processors.NRMCall
 import ru.DmN.pht.utils.computeString
@@ -14,7 +12,6 @@ import ru.DmN.siberia.processor.utils.ValType
 import ru.DmN.siberia.processor.utils.module
 import ru.DmN.siberia.processors.INodeProcessor
 import ru.DmN.siberia.utils.VirtualType
-import javax.imageio.ImageIO
 
 object NRIncImg : INodeProcessor<NodeNodesList> {
     override fun calc(node: NodeNodesList, processor: Processor, ctx: ProcessingContext): VirtualType =
@@ -26,14 +23,11 @@ object NRIncImg : INodeProcessor<NodeNodesList> {
             NRMCall.process(
                 nodeMCall(
                     info,
-                    "javax.imageio.ImageIO",
+                    "ru.DmN.phtx.ppl.utils.ImageUtils",
                     "read",
                     listOf(
-                        nodeNew(
-                            info,
-                            "java.io.File",
-                            listOf(nodeValue(info, "${ctx.module.name}/${processor.computeString(node.nodes[0], ctx)}"))
-                        )
+                        nodeValue(info, ctx.module.name),
+                        nodeValue(info, processor.computeString(node.nodes[0], ctx))
                     )
                 ),
                 processor,

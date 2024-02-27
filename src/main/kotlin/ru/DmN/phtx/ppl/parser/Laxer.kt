@@ -71,18 +71,7 @@ class Laxer(input: String) { // todo: line & symbol info
 
             "картинка" -> {
                 checkC(':')
-                val image = nextString()
-                arguments.add(
-                    if (image.value.startsWith("http"))
-                        NodeNodesList(
-                            NodeInfoImpl(NEW, null, line),
-                            mutableListOf(
-                                NodeValue(NodeInfoImpl(VALUE, null ,line), CLASS, "java.net.URL"),
-                                image
-                            )
-                        )
-                    else NodeNodesList(NodeInfoImpl(INC_IMG, null, line), mutableListOf(image))
-                )
+                arguments.add(NodeNodesList(NodeInfoImpl(INC_IMG, null, line), mutableListOf(nextString())))
                 NodeNodesList(NodeInfoImpl(E_IMAGE, null, line), arguments)
             }
 
