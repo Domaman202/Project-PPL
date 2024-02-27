@@ -1,0 +1,7 @@
+(progn
+    (import "phtx/ppl" [[types [ru.DmN.phtx.ppl.utils.Presentation]]])
+    (app
+        (app-fn (#show (#presentation . false)))
+        (defn presentation ^Presentation [[printMode ^boolean]]
+            (presentation "Тестовая Презентация" 2500 printMode
+                (inc-ppl "src.ppl")))))

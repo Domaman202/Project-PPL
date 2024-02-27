@@ -23,100 +23,114 @@ class Laxer(input: String) { // todo: line & symbol info
     fun next(): MutableList<Node> =
         nextOperations(-1)
 
-    private fun next(prevTab: Int): Node? = checkTab(prevTab) { tab ->
-        if (!tryC('['))
-            return null
-        val arguments = ArrayList<Node>()
-        val operation = StringBuilder()
-        while (!tryC(']')) {
-            if (tryC('(')) {
-                skipSpace()
-                while (!tryC(')')) {
-                    arguments += nextNumber()
+    private fun next(prevTab: Int, singleCommand: Boolean = true): Node? =
+        checkTab(prevTab, !singleCommand) { tab ->
+            if (singleCommand && !tryC('['))
+                return null
+            //
+            val arguments = ArrayList<Node>()
+            val sb = StringBuilder()
+            //
+            var singleLine = true
+            while (!tryC(']')) {
+                if (tryC('(')) {
                     skipSpace()
+                    while (!tryC(')')) {
+                        arguments += nextNumber()
+                        skipSpace()
+                    }
+                    //
+                    skipSpace()
+                    if (tryC('@')) {
+                        singleLine = false
+                        break
+                    }
+                    //
+                    checkC(']')
+                    break
                 }
-                checkC(']')
-                break
+                //
+                sb.append(input[inc()])
+                //
+                skipSpace()
+                if (tryC('@')) {
+                    singleLine = false
+                    break
+                }
             }
-            operation.append(input[inc()])
+            //
+            val operation = sb.toString().trim().lowercase()
+            when (operation) {
+                "страница" -> {
+                    val sized = arguments.isNotEmpty()
+                    if (tryC(':'))
+                        arguments.addAll(nextOperations(tab))
+                    NodeNodesList(NodeInfoImpl(if (sized) PAGE_SIZED_LIST else PAGE_LIST, null, line), arguments)
+                }
+
+                "заголовок" -> {
+                    checkC(':')
+                    arguments.add(0, nextStrings(tab))
+                    NodeNodesList(NodeInfoImpl(E_TITLE, null, line), arguments)
+                }
+
+                "текст" -> {
+                    checkC(':')
+                    arguments.add(0, nextStrings(tab))
+                    NodeNodesList(NodeInfoImpl(E_TEXT, null, line), arguments)
+                }
+
+                "картинка" -> {
+                    checkC(':')
+                    arguments.add(NodeNodesList(NodeInfoImpl(INC_IMG, null, line), mutableListOf(nextString())))
+                    NodeNodesList(NodeInfoImpl(E_IMAGE, null, line), arguments)
+                }
+
+                "пара" -> {
+                    checkC(':')
+                    for (i in 0..1)
+                        arguments.add(next(tab)!!)
+                    NodeNodesList(NodeInfoImpl(C_PAIR, null, line), arguments)
+                }
+
+                "тройка" -> {
+                    checkC(':')
+                    for (i in 0..2)
+                        arguments.add(next(tab)!!)
+                    NodeNodesList(NodeInfoImpl(C_TRIPLE, null, line), arguments)
+                }
+
+                "четвёрка" -> {
+                    checkC(':')
+                    for (i in 0..3)
+                        arguments.add(next(tab)!!)
+                    NodeNodesList(NodeInfoImpl(C_FOURFOLD, null, line), arguments)
+                }
+
+                "размер" -> {
+                    if (singleLine)
+                        checkC(':')
+                    arguments.add(next(tab - 1, singleLine)!!)
+                    NodeNodesList(NodeInfoImpl(A_SIZED, null, line), arguments)
+                }
+
+                "сдвиг" -> {
+                    if (singleLine)
+                        checkC(':')
+                    arguments.add(next(tab - 1, singleLine)!!)
+                    NodeNodesList(NodeInfoImpl(A_OFFSET, null, line), arguments)
+                }
+
+                "середина" -> {
+                    if (singleLine)
+                        checkC(':')
+                    arguments.add(next(tab - 1, singleLine)!!)
+                    NodeNodesList(NodeInfoImpl(A_CENTER, null, line), arguments)
+                }
+
+                else -> throw RuntimeException()
+            }
         }
-        when (operation.toString().trim().lowercase()) {
-            "страница" -> {
-                val sized = arguments.isNotEmpty()
-                if (tryC(':'))
-                    arguments.addAll(nextOperations(tab))
-                NodeNodesList(
-                    NodeInfoImpl(
-                        if (sized)
-                            PAGE_SIZED_LIST
-                        else PAGE_LIST,
-                        null,
-                        line
-                    ),
-                    arguments
-                )
-            }
-
-            "заголовок" -> {
-                checkC(':')
-                arguments.add(0, nextStrings(tab))
-                NodeNodesList(NodeInfoImpl(E_TITLE, null, line), arguments)
-            }
-
-            "текст" -> {
-                checkC(':')
-                arguments.add(0, nextStrings(tab))
-                NodeNodesList(NodeInfoImpl(E_TEXT, null, line), arguments)
-            }
-
-            "картинка" -> {
-                checkC(':')
-                arguments.add(NodeNodesList(NodeInfoImpl(INC_IMG, null, line), mutableListOf(nextString())))
-                NodeNodesList(NodeInfoImpl(E_IMAGE, null, line), arguments)
-            }
-
-            "пара" -> {
-                checkC(':')
-                for (i in 0..1)
-                    arguments.add(next(tab)!!)
-                NodeNodesList(NodeInfoImpl(C_PAIR, null, line), arguments)
-            }
-
-            "тройка" -> {
-                checkC(':')
-                for (i in 0..2)
-                    arguments.add(next(tab)!!)
-                NodeNodesList(NodeInfoImpl(C_TRIPLE, null, line), arguments)
-            }
-
-            "четвёрка" -> {
-                checkC(':')
-                for (i in 0..3)
-                    arguments.add(next(tab)!!)
-                NodeNodesList(NodeInfoImpl(C_FOURFOLD, null, line), arguments)
-            }
-
-            "размер" -> {
-                checkC(':')
-                arguments.add(next(tab - 1)!!)
-                NodeNodesList(NodeInfoImpl(A_SIZED, null, line), arguments)
-            }
-
-            "сдвиг" -> {
-                checkC(':')
-                arguments.add(next(tab - 1)!!)
-                NodeNodesList(NodeInfoImpl(A_OFFSET, null, line), arguments)
-            }
-
-            "середина" -> {
-                checkC(':')
-                arguments.add(next(tab - 1)!!)
-                NodeNodesList(NodeInfoImpl(A_CENTER, null, line), arguments)
-            }
-
-            else -> throw RuntimeException()
-        }
-    }
 
     private fun nextOperations(prevTab: Int): MutableList<Node> {
         val nodes = ArrayList<Node>()
@@ -130,7 +144,7 @@ class Laxer(input: String) { // todo: line & symbol info
         return if (tryC('\n')) {
             val sb = StringBuilder()
             while (
-                checkTab(prevTab) {
+                checkTab(prevTab, false) {
                     while (!tryC('\n') && check())
                         sb.append(input[inc()])
                     sb.append('\n')
@@ -164,7 +178,9 @@ class Laxer(input: String) { // todo: line & symbol info
         return NodeValue(NodeInfoImpl(VALUE, null, line), INT, sb.toString())
     }
 
-    private inline fun <T> checkTab(prevTab: Int, block: (tab: Int) -> T): T? {
+    private inline fun <T> checkTab(prevTab: Int, skip: Boolean, block: (tab: Int) -> T): T? {
+        if (skip)
+            return block(prevTab)
         val tab = parseTabs()
         if (tab != prevTab + 1) {
             tabs.push(tab)

@@ -1,0 +1,7 @@
+(module
+    (name "TeCTOBAa-nPe3eHTAcUa")
+    (version "1.0.0")
+    (author "DomamaN202")
+    (deps ["pht" "phtx/ppl"])
+    (uses ["pht" "phtx/ppl"])
+    (src ["src.pht"]))
